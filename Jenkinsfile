@@ -11,13 +11,10 @@ pipeline {
                 sh 'echo "Workspace files:" && ls -la'
             }
         }
-
-        stage('Build'){
-            steps{
+        stage('Build & Install') {
+            steps {
                 echo "🔨 Building project with Maven..."
-                withMaven(maven: 'M2_HOME') {
-                  sh 'mvn clean install -DskipTests'
-                }
+                sh 'mvn clean install -Dmaven.test.failure.ignore=true'
                 echo "✅ Build completed"
             }
         }
