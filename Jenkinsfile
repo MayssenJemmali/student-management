@@ -1,9 +1,14 @@
 pipeline {
     agent any 
     stages{
-        stage('Hello'){
+        stage('Checkout'){
             steps{
-                echo 'Hello world'
+                echo "🔁 Checking out repository..."
+                git branch: 'main', url: 'https://github.com/MayssenJemmali/student-management.git'
+                // quick verification commands (will appear in the build console)
+                sh 'echo "Current branch:" && git rev-parse --abbrev-ref HEAD'
+                sh 'echo "Last commit:" && git log -1 --oneline'
+                sh 'echo "Workspace files:" && ls -la'
             }
         
         }
