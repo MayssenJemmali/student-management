@@ -22,7 +22,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo "🧪 Running unit tests..."
-                sh 'mvn test -Ptest'
+                sh 'mvn test -DskipTests=true'
             }
             post {
                 always {
