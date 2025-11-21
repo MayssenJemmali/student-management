@@ -10,7 +10,16 @@ pipeline {
                 sh 'echo "Last commit:" && git log -1 --oneline'
                 sh 'echo "Workspace files:" && ls -la'
             }
-        
+        }
+
+        stage('Build'){
+            steps{
+                echo "🔨 Building project with Maven..."
+                withMaven(maven: 'M2_HOME') {
+                  sh 'mvn clean install -DskipTests'
+                }
+                echo "✅ Build completed"
+            }
         }
     }
 }
