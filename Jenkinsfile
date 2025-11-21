@@ -22,7 +22,8 @@ pipeline {
         stage('Test') {
             steps {
                 echo "🧪 Running unit tests..."
-                sh 'mvn test -DskipTests=true'
+                //sh 'mvn test -DskipTests=true'
+                sh 'mvn test -Dmaven.test.failure.ignore=true'
             }
             post {
                 always {
