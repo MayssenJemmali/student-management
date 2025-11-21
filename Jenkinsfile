@@ -22,7 +22,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo "🧪 Running unit tests..."
-                sh 'mvn test'
+                sh 'mvn test -Ptest'
             }
             post {
                 always {
