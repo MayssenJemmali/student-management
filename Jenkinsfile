@@ -14,7 +14,7 @@ pipeline {
         stage('Build & Install') {
             steps {
                 echo "🔨 Building project with Maven..."
-                sh 'mvn clean install -Dmaven.test.failure.ignore=true'
+                sh 'mvn clean install'
                 echo "✅ Build completed"
             }
         }
