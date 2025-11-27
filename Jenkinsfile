@@ -1,5 +1,15 @@
 pipeline {
-    agent any 
+    agent any
+
+    tools {
+        maven 'maven'  // Make sure this matches the Maven installation name in Jenkins
+    }
+
+    environment {
+        DOCKERHUB_USER = 'mayssenj'
+        IMAGE_NAME     = 'student-management'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -32,7 +42,32 @@ pipeline {
             }
         }
 
-    }  // <-- end of stages
+        stage('Build Docker Image') {
+            steps {
+                echo "🐳 Building Docker image..."
+                sh "docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}:latest ."
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                echo "🚀 Pushing Docker image to DockerHub..."
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub',  // Replace with your Jenkins DockerHub credentials ID
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                    )
+                ]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker push ${DOCKERHUB_USER}/${IMAGE_NAME}:latest
+                        docker logout
+                    '''
+                }
+            }
+        }
+    }
 
     post {
         success { echo "✅ Pipeline succeeded" }
@@ -40,4 +75,3 @@ pipeline {
         failure { echo "❌ Pipeline failed" }
     }
 }
-

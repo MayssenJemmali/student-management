@@ -1,15 +1,15 @@
-FROM eclipse-temurin:17-jdk-jammy as builder
+FROM eclipse-temurin:17-jdk-jammy AS builder
 
 WORKDIR /app
-COPY target/student-management-0.0.1-SNAPSHOT.war app.war
 
-# Second stage : image finale, plus légère
+COPY target/*.jar app.jar
+
 FROM eclipse-temurin:17-jre-jammy
 
 WORKDIR /app
 
-COPY --from=builder /app/app.war app.war
+COPY --from=builder /app/app.jar app.jar
 
-EXPOSE 8089
+EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "/app/app.war"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
