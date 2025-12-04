@@ -42,6 +42,21 @@ pipeline {
             }
         }
 
+        stage('SonarQube') {
+            steps {
+                echo 'analyse de SonarQube'
+                dir('student-management') {
+                    withSonarQubeEnv('sonarqube') {
+                        sh '''
+                            mvn sonar:sonar \
+                              -Dsonar.projectKey=student \
+                              -Dsonar.java.binaries=target/classes
+                        '''
+                    }
+                }
+            }
+        }
+        
         stage('Build Docker Image') {
             steps {
                 echo "🐳 Building Docker image..."
