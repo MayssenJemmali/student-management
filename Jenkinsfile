@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'M2_HOME'  // Make sure this matches the Maven installation name in Jenkins ss
+        maven 'M2_HOME'  // Make sure this matches the Maven installation name in Jenkins 
     }
 
     environment {
@@ -42,6 +42,22 @@ pipeline {
             }
         }
 
+        stage('SonarQube') {
+            steps {
+                echo '🔍 Running SonarQube analysis...'
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    sh '''
+                        mvn sonar:sonar \
+                          -Dsonar.projectKey=student \
+                          -Dsonar.login=$SONAR_TOKEN \
+                          -Dsonar.java.binaries=target/classes
+                    '''
+                }
+            }
+        }
+
+
+        
         stage('Build Docker Image') {
             steps {
                 echo "🐳 Building Docker image..."
