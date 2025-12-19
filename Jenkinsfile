@@ -83,6 +83,28 @@ pipeline {
                 }
             }
         }
+        stage('Deploy to Kubernetes') {
+      steps {
+        sh '''
+          kubectl version --client
+          kubectl get nodes
+
+          # Apply manifests
+          kubectl apply -f k8s/namespace.yaml
+          kubectl apply -f k8s/mysql-deployment.yaml
+          kubectl apply -f k8s/mysql-service.yaml
+          kubectl apply -f k8s/backend-deployment.yaml
+          kubectl apply -f k8s/backend-service.yaml
+
+          # Wait for rollouts
+          kubectl rollout status deployment/mysql -n ${K8S_NAMESPACE} --timeout=180s
+          kubectl rollout status deployment/student-backend -n ${K8S_NAMESPACE} --timeout=240s
+
+          # Show status
+          kubectl get pods -n ${K8S_NAMESPACE} -o wide
+          kubectl get svc -n ${K8S_NAMESPACE}
+        '''
+      }
     }
 
     post {
